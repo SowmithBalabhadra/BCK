@@ -11,7 +11,7 @@ const adminSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
+//hdsdfns
 // Create the Admin model
 const adminModel =
   mongoose.models.admin || mongoose.model("seller", adminSchema);
