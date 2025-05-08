@@ -34,31 +34,30 @@ const insertDummyAdmin = async () => {
 // Immediately run dummy admin insert
 insertDummyAdmin();
 
-// ✅ Login Admin
+// Login Admin
 const loginAdmin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        console.log("🔐 Admin Login Attempt");
-
+        console.log("Inside Seller Login");
         const user = await userModel.findOne({ email });
+
         if (!user) {
-            return res.status(404).json({ success: false, message: "User does not exist" });
+            return res.json({ success: false, message: "User does not exist" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ success: false, message: "Invalid credentials" });
+            return res.json({ success: false, message: "Invalid credentials" });
         }
 
         const token = createToken(user._id);
-
-        // ✅ Secure cookie setup
-        res.cookie("token", token, {
+        console.log("settingToken");
+        res.cookie("seller_token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            secure: false,
+            sameSite: 'Lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         res.json({ success: true, message: "Login successful" });
@@ -68,25 +67,26 @@ const loginAdmin = async (req, res) => {
     }
 };
 
-// ✅ Register Admin
+// Register Admin
 const registerAdmin = async (req, res) => {
     const { name, email, password, name_of_the_shop } = req.body;
 
     try {
         const exists = await userModel.findOne({ email });
         if (exists) {
-            return res.status(400).json({ success: false, message: "User already exists" });
+            return res.json({ success: false, message: "User already exists" });
         }
 
         if (!validator.isEmail(email)) {
-            return res.status(400).json({ success: false, message: "Invalid email format" });
+            return res.json({ success: false, message: "Please enter a valid email" });
         }
 
         if (password.length < 8) {
-            return res.status(400).json({ success: false, message: "Password must be at least 8 characters" });
+            return res.json({ success: false, message: "Password must be at least 8 characters long" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new userModel({
             name,
@@ -98,11 +98,10 @@ const registerAdmin = async (req, res) => {
         const user = await newUser.save();
         const token = createToken(user._id);
 
-        // ✅ Secure cookie setup
-        res.cookie("token", token, {
+        res.cookie("seller_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+            sameSite: "None",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 

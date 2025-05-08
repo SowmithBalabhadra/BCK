@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
+import sellerModel from "../models/adminModel.js"
 import Stripe from "stripe";
 import redisClient from "../utils/redisClient.js";
 import jwt from "jsonwebtoken";
@@ -17,7 +18,8 @@ const verifySeller = async (req) => {
     if (!token) throw new Error("Unauthorized: No token");
   
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const seller = await userModel.findById(decoded.id);
+    console.log(decoded);
+    const seller = await sellerModel.findById(decoded.id);
     console.log("before");
     if (!seller) throw new Error("Unauthorized: Invalid seller");
         console.log("After")

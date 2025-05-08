@@ -13,13 +13,10 @@ import shopOwnerRoutes from './rent_folder/routes/shopOwner.js';
 import shoptakerRoutes from './rent_folder/routes/shoptaker.js';
 import { performanceLogger } from "./middleware/performanceLogger.js";
 import redisClient from "./utils/redisClient.js";
-
+import dashboardRoutes from './routes/dashboardRoute.js';
 // ✅ Swagger
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger/swaggerConfig.js";
-
-// ✅ New Total Control Dashboard Route
-import dashboardRoutes from './routes/dashboardRoute.js';  // ← NEW
 
 // App config
 const app = express();
@@ -52,8 +49,7 @@ app.use("/api/order", orderRouter);
 app.use('/auth', authRoutes);
 app.use('/shopOwner', shopOwnerRoutes);
 app.use('/shoptaker', shoptakerRoutes);
-app.use('/api/dashboard', dashboardRoutes); // ← ✅ Added Dashboard route here
-
+app.use('/api/dashboard', dashboardRoutes);
 // Root route
 app.get("/", (req, res) => {
   res.send("Working");
