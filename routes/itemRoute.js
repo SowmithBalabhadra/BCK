@@ -1,6 +1,7 @@
 import express from 'express';
-import { addFood, listFood, removeFood } from '../controllers/itemController.js';
+import { addFood, listFood,listFood1, removeFood } from '../controllers/itemController.js';
 import multer from 'multer';
+// import {listFoodUser} from '../controllers/userFunctionsController.js';
 
 const itemRouter = express.Router();
 
@@ -53,8 +54,11 @@ const upload = multer({ storage: storage });
  *                       image:
  *                         type: string
  */
+itemRouter.get('/list1', (req, res, next) => {
+  console.log("✅ /list1 route was accessed"); // Inline log in route
+  next(); // Pass control to the actual controller
+}, listFood1);
 itemRouter.get("/list", listFood);
-
 /**
  * @swagger
  * /api/food/add:
@@ -97,7 +101,11 @@ itemRouter.get("/list", listFood);
  *       400:
  *         description: Invalid input
  */
-itemRouter.post("/add", upload.single('image'), addFood);
+itemRouter.post("/add", (req, res, next) => {
+  console.log("🛬 /api/food/add route accessed");
+  next(); // pass control to the next middleware (upload & addFood)
+}, upload.single('image'), addFood);
+
 
 /**
  * @swagger

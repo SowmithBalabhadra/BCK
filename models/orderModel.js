@@ -7,7 +7,8 @@ const orderSchema = new mongoose.Schema({
   address: { type: Object, required: true },
   status: { type: String, default: "Processing Order" },
   date: { type: Date, default: Date.now() },
-  payment: { type: Boolean, default: false }
+  payment: { type: Boolean, default: false },
+  owner_email: { type: String, default: false }  // Added field
 });
 
 // Index for querying orders by user and date
